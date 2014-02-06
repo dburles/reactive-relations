@@ -3,6 +3,8 @@ reactive-relations
 
 Intelligent reactive relational publications for Meteor
 
+# This package is new and still experimental
+
 ### API Examples
 
 #### Define these between client and server
