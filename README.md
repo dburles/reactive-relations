@@ -13,11 +13,23 @@ Publishing reactive relationships is not a trivial task in Meteor. What reactive
 
  There are a couple of other solutions to this problem but what's different here is that we're *not* setting up observers server-side (like publish-with-relations) so we're not taxing the server. The client passes the required values automatically and in doing so, keeps everything in sync.
 
-### API Examples
+## API Examples
 
 #### Define these between client and server
 
+It's important that both client and server can see these, so make sure they go in a file that's visible by both.
+
 ```javascript
+// Publish a simple news feed
+// Where our feed collection looks a little like:
+// {
+//   "_id" : "vhMPxubr8rTdaLvj4"
+//   "body" : "hi",
+//   "createdAt" : 1391649092926,
+//   "userId" : "vcaEodnAHahveESaE",
+//   "eventId" : "2uRsvYj8f9ZaQHHSa"
+// }
+
 Reactive = {
   feed: {
     cursor: function() { return Feeds.find({}, { limit: 20, sort: { createdAt: -1 }}); },
@@ -78,3 +90,20 @@ Reactive = {
   }
 };
 ```
+
+
+## Publishing and Subscribing
+
+On the server simply write:
+```javascript
+Meteor.publishReactive('feed');
+```
+
+and on the client:
+```javascript
+Meteor.subscribeReactive('feed');
+```
+
+### Licence
+
+MIT
