@@ -4,6 +4,14 @@ reactive-relations
 Intelligent reactive relational publications for Meteor
 
 # This package is new and still experimental
+However, please try it out!
+
+### What is it?
+
+Publishing reactive relationships is not a trivial task in Meteor. What reactive-relations does is expose an API that allows you to publish and subscribe to reactive relationships easily.
+
+
+ There are a couple of other solutions to this problem but what's different here is that we're *not* setting up observers server-side (like publish-with-relations) so we're not taxing the server. The client passes the required values automatically and in doing so, keeps everything in sync.
 
 ### API Examples
 
