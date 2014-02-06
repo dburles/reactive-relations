@@ -10,7 +10,7 @@ if (Meteor.isClient) {
         if (! relation.parentKey)
           relation.parentKey = '_id';
 
-        keyValues[relation.parentKey] = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+        keyValues[relation.parentKey] = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
       });
 
       // console.log('subscribing with ', keyValues);
@@ -34,7 +34,7 @@ if (Meteor.isServer) {
 
         // on first subscribe, server resolves the relationships
         if (keyValues[relation.parentKey] && keyValues[relation.parentKey].length === 0)
-          keyValues[relation.parentKey] = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+          keyValues[relation.parentKey] = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
 
         // build query
         if (! relation.key)
@@ -53,7 +53,7 @@ if (Meteor.isServer) {
           relation.query[relation.key] = { $in: keyValues[relation.parentKey] };
         }
 
-        // console.log(relation.query, relation.options);
+        console.log(relation.query, relation.options);
 
         relationCursors.push(relation.collection().find(relation.query, relation.options));
       });
