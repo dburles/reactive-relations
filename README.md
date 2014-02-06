@@ -44,7 +44,7 @@ Reactive = {
       collection: function() { return Comments; },
       map: {
         values: function() {
-          var topPostsCursor = Reactive.topPostsWithTopComments.mapper.cursor();
+          var topPostsCursor = Reactive.topPostsWithTopComments.cursor();
           var postIds = topPostsCursor.map(function(p) { return p._id; });
           var commentIds = _.map(postIds, function(postId) {
             var comment = Comments.findOne({postId: postId}, {sort: {score: -1}});
