@@ -25,6 +25,7 @@ Reactive = {
 ```
 
 ```javascript
+// Both do the same thing
 Reactive = {
   authorsWithBooks: {
     cursor: function() { return Authors.find(); },
@@ -34,8 +35,18 @@ Reactive = {
       filter: {},
       options: {}
     }]
+  },
+  booksWithAuthors: {
+    cursor: function() { return Books.find(); },
+    relations: [{
+      collection: function() { return Authors; },
+      parentKey: 'authorId',
+      filter: {},
+      options: {}
+    }]
   }
 };
+
 ```
 
 ```javascript
