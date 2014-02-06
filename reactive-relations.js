@@ -53,7 +53,7 @@ if (Meteor.isServer) {
           relation.query[relation.key] = { $in: keyValues[relation.parentKey] };
         }
 
-        console.log(relation.query, relation.options);
+        // console.log(relation.query, relation.options);
 
         relationCursors.push(relation.collection().find(relation.query, relation.options));
       });
