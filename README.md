@@ -21,7 +21,7 @@ It's important that both client and server can see these, so make sure they go i
 
 ```javascript
 // Publish a simple news feed
-// Where our feed collection looks a little like:
+// where our feed document looks a little like:
 // {
 //   "_id" : "vhMPxubr8rTdaLvj4"
 //   "body" : "hi",
