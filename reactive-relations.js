@@ -1,7 +1,7 @@
 if (Meteor.isClient) {
   Meteor.subscribeReactive = function(name) {
-    var mapper = Reactive[name].mapper;
-    var relations = Reactive[name].relations;
+    var mapper = Reactive[name];
+    var relations = mapper.relations;
 
     Deps.autorun(function() {
       var keyValues = {};
@@ -22,8 +22,8 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.publishReactive = function(name) {
     Meteor.publish(name, function(keyValues) {
-      var mapper = Reactive[name].mapper;
-      var relations = Reactive[name].relations;
+      var mapper = Reactive[name];
+      var relations = mapper.relations;
       var relationCursors = [];
 
       // console.log(keyValues);
