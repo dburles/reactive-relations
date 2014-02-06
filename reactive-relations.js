@@ -7,10 +7,10 @@ if (Meteor.isClient) {
       var keyValues = {};
 
       _.each(relations, function(relation) {
-        if (! relation.foreignKey)
-          relation.foreignKey = '_id';
+        if (! relation.parentKey)
+          relation.parentKey = '_id';
 
-        keyValues[relation.foreignKey] = mapper.cursor().map(function(doc) { return doc[relation.foreignKey]; });
+        keyValues[relation.parentKey] = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
       });
 
       // console.log('subscribing with ', keyValues);
@@ -29,12 +29,12 @@ if (Meteor.isServer) {
       // console.log(keyValues);
 
       _.each(relations, function(relation) {
-        if (! relation.foreignKey)
-          relation.foreignKey = '_id';
+        if (! relation.parentKey)
+          relation.parentKey = '_id';
 
         // on first subscribe, server resolves the relationships
-        if (keyValues[relation.foreignKey].length === 0)
-          keyValues[relation.foreignKey] = mapper.cursor().map(function(doc) { return doc[relation.foreignKey]; });
+        if (keyValues[relation.parentKey] && keyValues[relation.parentKey].length === 0)
+          keyValues[relation.parentKey] = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
 
         // build query
         if (! relation.key)
@@ -50,7 +50,7 @@ if (Meteor.isServer) {
             relation.map.key = '_id';
           relation.query[relation.map.key] = { $in: relation.map.values() };
         } else {
-          relation.query[relation.key] = { $in: keyValues[relation.foreignKey] };
+          relation.query[relation.key] = { $in: keyValues[relation.parentKey] };
         }
 
         // console.log(relation.query, relation.options);
