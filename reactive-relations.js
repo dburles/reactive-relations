@@ -30,22 +30,17 @@ if (Meteor.isServer) {
     });
 
     _.each(relations, function(relation) {
-      if (! relation.key)
-        relation.key = '_id';
-      if (! relation.parentKey)
-        relation.parentKey = '_id';
+      // defaults
+      if (! relation.key) relation.key = '_id';
+      if (! relation.parentKey) relation.parentKey = '_id';
+      if (! relation.query) relation.query = {};
+      if (! relation.options) relation.options = {};
 
       Meteor.publish(name + '_' + relation.collection()._name, function(keyValues) {
         // console.log('call to ' + name + '_' + relation.collection()._name);
         // on first subscribe, server resolves the relationships
         if (keyValues && keyValues.length === 0)
           keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
-
-        // build query
-        if (! relation.query)
-          relation.query = {};
-        if (! relation.options)
-          relation.options = {};
 
         relation.query[relation.key] = { $in: _.uniq(keyValues) };
 
