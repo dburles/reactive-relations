@@ -15,11 +15,8 @@ if (Meteor.isClient) {
 
         keyValues[relation.parentKey] = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
         console.log('subscribing to ' + relation.collection()._name);
-        Meteor.subscribe(relation.collection()._name, keyValues[relation.parentKey]);
+        Meteor.subscribe(name + '_' + relation.collection()._name, keyValues[relation.parentKey]);
       });
-
-      // console.log('subscribing with ', keyValues);
-      
     });
   };
 }
@@ -28,10 +25,8 @@ if (Meteor.isServer) {
   Meteor.publishReactive = function(name) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
-    
+
     Meteor.publish(name, function() {
-      
-      
       console.log('publishing ' + name);
       // console.log(keyValues);
 
@@ -45,11 +40,9 @@ if (Meteor.isServer) {
       if (! relation.parentKey)
         relation.parentKey = '_id';
 
-
-
       // console.log(relation.query, relation.options);
 
-      Meteor.publish(relation.collection()._name, function(keyValues) {
+      Meteor.publish(name + '_' + relation.collection()._name, function(keyValues) {
         // on first subscribe, server resolves the relationships
         if (keyValues && keyValues.length === 0)
           keyValues = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
