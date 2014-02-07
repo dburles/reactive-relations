@@ -3,16 +3,16 @@ if (Meteor.isClient) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    Meteor.subscribe(name);
     console.log('subscribing to ' + name);
+    Meteor.subscribe(name);
+    
+    _.each(relations, function(relation) {
+      console.log('loop: ' + relation.collection()._name);
+      if (! relation.parentKey)
+        relation.parentKey = '_id';
 
-    Deps.autorun(function() {
-      var keyValues = {};
-
-      _.each(relations, function(relation) {
-        if (! relation.parentKey)
-          relation.parentKey = '_id';
-
+      Deps.autorun(function() {
+        var keyValues = {};
         keyValues[relation.parentKey] = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
         console.log('subscribing to ' + relation.collection()._name);
         Meteor.subscribe(name + '_' + relation.collection()._name, keyValues[relation.parentKey]);
