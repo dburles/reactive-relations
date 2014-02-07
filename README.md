@@ -69,30 +69,7 @@ Reactive = {
   }
 };
 
-```
-
-```javascript
-Reactive = {
-  topPostsWithTopComments: {
-    cursor: function() { return Posts.find({}, {sort: {score: -1}, limit: 30}); },
-    relations: [{
-      collection: function() { return Comments; },
-      map: {
-        values: function() {
-          var topPostsCursor = Reactive.topPostsWithTopComments.cursor();
-          var postIds = topPostsCursor.map(function(p) { return p._id; });
-          var commentIds = _.map(postIds, function(postId) {
-            var comment = Comments.findOne({postId: postId}, {sort: {score: -1}});
-            return comment._id;
-          });
-          return commentIds;
-        }
-      }
-    }]
-  }
-};
-```
-
+````
 
 ## Publishing and Subscribing
 
