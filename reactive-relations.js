@@ -3,24 +3,16 @@ if (Meteor.isClient) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    console.log('subscribing to ' + name);
+    // console.log('subscribing to ' + name);
     var handle = Meteor.subscribe(name);
     
     _.each(relations, function(relation) {
-      console.log('loop: ' + relation.collection()._name);
       if (! relation.parentKey)
         relation.parentKey = '_id';
 
-      var c = 0;
       Deps.autorun(function() {
-        // why does this not make a difference
-        if (handle.ready()) {
-          console.log('subscribing to ' + relation.collection()._name + c);
-          keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
-          
-          Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues));
-          c += 1;
-        }
+        var keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+        Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues));
       });
     });
   };
@@ -32,7 +24,7 @@ if (Meteor.isServer) {
     var relations = mapper.relations;
 
     Meteor.publish(name, function() {
-      console.log('publishing ' + name);
+      // console.log('call to ' + name);
       return mapper.cursor();
     });
 
@@ -43,6 +35,7 @@ if (Meteor.isServer) {
         relation.parentKey = '_id';
 
       Meteor.publish(name + '_' + relation.collection()._name, function(keyValues) {
+        // console.log('call to ' + name + '_' + relation.collection()._name);
         // on first subscribe, server resolves the relationships
         if (keyValues && keyValues.length === 0)
           keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
