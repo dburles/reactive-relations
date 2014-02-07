@@ -12,6 +12,8 @@ Publishing reactive relationships is not a trivial task in Meteor. What reactive
 
 
  There are a couple of other solutions to this problem but what's different here is that we're *not* setting up observers server-side (like publish-with-relations) so we're not taxing the server. The client passes the required values automatically and in doing so, keeps everything in sync.
+ 
+ For more information on what exactly this package is solving (and how) [please see this wiki page](https://github.com/dburles/reactive-relations/wiki/Making-everything-reactive)
 
 ## API Examples
 
