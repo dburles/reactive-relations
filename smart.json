@@ -3,6 +3,6 @@
   "description": "Intelligent reactive relational publications",
   "homepage": "https://github.com/dburles/reactive-relations",
   "author": "David Burles (http://twitter.com/dburles)",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "git": "https://github.com/dburles/reactive-relations.git"
 }
