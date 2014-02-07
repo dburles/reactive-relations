@@ -3,8 +3,8 @@ if (Meteor.isClient) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    // console.log('subscribing to ' + name);
-    var handle = Meteor.subscribe(name);
+    // console.log('subscribing to ' + name + '_' + mapper.cursor().collection.name);
+    var handle = Meteor.subscribe(name + '_' + mapper.cursor().collection.name);
     
     _.each(relations, function(relation) {
       if (! relation.parentKey)
@@ -24,7 +24,7 @@ if (Meteor.isServer) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    Meteor.publish(name, function() {
+    Meteor.publish(name + '_' + mapper.cursor()._cursorDescription.collectionName, function() {
       // console.log('call to ' + name);
       return mapper.cursor();
     });
