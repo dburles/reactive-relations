@@ -3,64 +3,56 @@ if (Meteor.isClient) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    Deps.autorun(function() {
-      var keyValues = {};
+    // console.log('subscribing to ' + name);
+    var handle = Meteor.subscribe(name);
+    
+    _.each(relations, function(relation) {
+      if (! relation.parentKey)
+        relation.parentKey = '_id';
 
-      _.each(relations, function(relation) {
-        if (! relation.parentKey)
-          relation.parentKey = '_id';
-
-        keyValues[relation.parentKey] = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
+      Deps.autorun(function() {
+        var keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+        // console.log('subscribing to ' + name + '_' + relation.collection()._name);
+        Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues));
       });
-
-      // console.log('subscribing with ', keyValues);
-      Meteor.subscribe(name, keyValues);
     });
   };
 }
 
 if (Meteor.isServer) {
   Meteor.publishReactive = function(name) {
-    Meteor.publish(name, function(keyValues) {
-      var mapper = Reactive[name];
-      var relations = mapper.relations;
-      var relationCursors = [];
+    var mapper = Reactive[name];
+    var relations = mapper.relations;
 
-      // console.log(keyValues);
+    Meteor.publish(name, function() {
+      // console.log('call to ' + name);
+      return mapper.cursor();
+    });
 
-      _.each(relations, function(relation) {
-        if (! relation.parentKey)
-          relation.parentKey = '_id';
+    _.each(relations, function(relation) {
+      if (! relation.key)
+        relation.key = '_id';
+      if (! relation.parentKey)
+        relation.parentKey = '_id';
 
+      Meteor.publish(name + '_' + relation.collection()._name, function(keyValues) {
+        // console.log('call to ' + name + '_' + relation.collection()._name);
         // on first subscribe, server resolves the relationships
-        if (keyValues[relation.parentKey] && keyValues[relation.parentKey].length === 0)
-          keyValues[relation.parentKey] = _.uniq(mapper.cursor().map(function(doc) { return doc[relation.parentKey]; }));
+        if (keyValues && keyValues.length === 0)
+          keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
 
         // build query
-        if (! relation.key)
-          relation.key = '_id';
         if (! relation.query)
           relation.query = {};
         if (! relation.options)
           relation.options = {};
 
-        // manually pass in things to join on
-        if (relation.map) {
-          if (! relation.map.key)
-            relation.map.key = '_id';
-          relation.query[relation.map.key] = { $in: relation.map.values() };
-        } else {
-          relation.query[relation.key] = { $in: keyValues[relation.parentKey] };
-        }
+        relation.query[relation.key] = { $in: _.uniq(keyValues) };
 
         // console.log(relation.query, relation.options);
 
-        relationCursors.push(relation.collection().find(relation.query, relation.options));
+        return relation.collection().find(relation.query, relation.options);
       });
-
-      return [
-        mapper.cursor(),
-      ].concat(relationCursors);
     });
   };
 }
