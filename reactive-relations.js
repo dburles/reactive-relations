@@ -12,6 +12,7 @@ if (Meteor.isClient) {
 
       Deps.autorun(function() {
         var keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+        // console.log('subscribing to ' + name + '_' + relation.collection()._name);
         Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues));
       });
     });
