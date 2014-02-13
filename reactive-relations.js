@@ -4,8 +4,8 @@ if (Meteor.isClient) {
     var relations = mapper.relations;
 
     // console.log('subscribing to ' + name + '_' + mapper.cursor().collection.name);
-    var handle = Meteor.subscribe(name + '_' + mapper.cursor().collection.name);
-    
+    var handles = [Meteor.subscribe(name + '_' + mapper.cursor().collection.name)];
+
     _.each(relations, function(relation) {
       if (! relation.parentKey)
         relation.parentKey = '_id';
@@ -13,9 +13,11 @@ if (Meteor.isClient) {
       Deps.autorun(function() {
         var keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
         // console.log('subscribing to ' + name + '_' + relation.collection()._name);
-        Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues));
+        handles.push(Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues)));
       });
     });
+
+    return handles;
   };
 }
 
