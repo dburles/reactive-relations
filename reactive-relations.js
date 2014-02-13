@@ -3,15 +3,15 @@ if (Meteor.isClient) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    // console.log('subscribing to ' + name + '_' + mapper.cursor().collection.name);
-    var handles = [Meteor.subscribe(name + '_' + mapper.cursor().collection.name)];
+    // console.log('subscribing to ' + name + '_' + mapper.cursor.call(this).collection.name);
+    var handles = [Meteor.subscribe(name + '_' + mapper.cursor.call(this).collection.name)];
 
     _.each(relations, function(relation) {
       if (! relation.parentKey)
         relation.parentKey = '_id';
 
       Deps.autorun(function() {
-        var keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+        var keyValues = mapper.cursor.call(this).map(function(doc) { return doc[relation.parentKey]; });
         // console.log('subscribing to ' + name + '_' + relation.collection()._name);
         handles.push(Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues)));
       });
@@ -26,9 +26,9 @@ if (Meteor.isServer) {
     var mapper = Reactive[name];
     var relations = mapper.relations;
 
-    Meteor.publish(name + '_' + mapper.cursor()._cursorDescription.collectionName, function() {
+    Meteor.publish(name + '_' + mapper.cursor.call(this)._cursorDescription.collectionName, function() {
       // console.log('call to ' + name);
-      return mapper.cursor();
+      return mapper.cursor.call(this);
     });
 
     _.each(relations, function(relation) {
@@ -42,7 +42,7 @@ if (Meteor.isServer) {
         // console.log('call to ' + name + '_' + relation.collection()._name);
         // on first subscribe, server resolves the relationships
         if (keyValues && keyValues.length === 0)
-          keyValues = mapper.cursor().map(function(doc) { return doc[relation.parentKey]; });
+          keyValues = mapper.cursor.call(this).map(function(doc) { return doc[relation.parentKey]; });
 
         relation.query[relation.key] = { $in: _.uniq(keyValues) };
 
