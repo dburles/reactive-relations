@@ -15,8 +15,6 @@ if (Meteor.isClient) {
           // console.log('subscribing to ' + name + '_' + relation.collection()._name + ' with key: ' + doc[relation.parentKey]);
           handles.push(Meteor.subscribe(name + '_' + relation.collection()._name, doc[relation.parentKey]));
         });
-        // var keyValues = mapper.cursor.call(this).map(function(doc) { return doc[relation.parentKey]; });
-        // handles.push(Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues)));
       });
     });
 
