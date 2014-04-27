@@ -3,7 +3,8 @@ reactive-relations
 
 Intelligent reactive relational publications for Meteor
 
-# This package is new and still experimental
+# WARNING! This package is just an experiment!
+
 However, please try it out!
 
 ### What is it?
