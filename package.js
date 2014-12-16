@@ -1,7 +1,11 @@
 Package.describe({
-  summary: 'Intelligent reactive relational publications'
+  name: 'dburles:reactive-relations',
+  summary: 'Intelligent reactive relational publications',
+  version: '0.1.7',
+  git: 'https://github.com/dburles/reactive-relations.git'
 });
 
-Package.on_use(function(api) {
-  api.add_files('reactive-relations.js', ['client', 'server']);
+Package.onUse(function(api) {
+  api.versionsFrom('1.0');
+  api.addFiles('reactive-relations.js');
 });

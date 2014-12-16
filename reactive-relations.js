@@ -10,7 +10,7 @@ if (Meteor.isClient) {
       if (! relation.parentKey)
         relation.parentKey = '_id';
 
-      Deps.autorun(function() {
+      Tracker.autorun(function() {
         var keyValues = mapper.cursor.call(this).map(function(doc) { return doc[relation.parentKey]; });
         // console.log('subscribing to ' + name + '_' + relation.collection()._name);
         handles.push(Meteor.subscribe(name + '_' + relation.collection()._name, _.uniq(keyValues)));
