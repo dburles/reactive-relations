@@ -3,9 +3,10 @@ reactive-relations
 
 Intelligent reactive relational publications for Meteor
 
-# WARNING! This package is just an experiment!
+# This package is no longer under development.
 
-However, please try it out!
+Please instead use [reywood:publish-composite](https://atmospherejs.com/reywood/publish-composite)
+
 
 ### What is it?
 
